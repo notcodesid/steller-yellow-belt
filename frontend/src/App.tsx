@@ -5,12 +5,7 @@ import { ErrorBanner } from "./components/ErrorBanner";
 import { PollCard } from "./components/PollCard";
 import { TxStatus, type TxRecord } from "./components/TxStatus";
 import { WalletConnect } from "./components/WalletConnect";
-import {
-  ADMIN_ADDRESS,
-  CONTRACT_ID,
-  explorerAccount,
-  explorerContract,
-} from "./config";
+import { CONTRACT_ID, explorerContract } from "./config";
 import { fetchPollEvents, type PollEvent } from "./lib/events";
 import { classifyError, ErrorType, type AppError } from "./lib/errors";
 import { getPoll, hasVoted, invokeAndTrack, type PollData } from "./lib/soroban";
@@ -295,12 +290,6 @@ export default function App() {
           <strong>Contract</strong>{" "}
           <a href={explorerContract(CONTRACT_ID)} target="_blank" rel="noreferrer">
             {CONTRACT_ID}
-          </a>
-        </div>
-        <div>
-          <strong>Admin</strong>{" "}
-          <a href={explorerAccount(ADMIN_ADDRESS)} target="_blank" rel="noreferrer">
-            {ADMIN_ADDRESS}
           </a>
         </div>
         <div className="kbd">

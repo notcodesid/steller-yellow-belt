@@ -52,14 +52,24 @@ transaction status tracking.
 | Contract deploy | `96bf843af442d2e1e332cb2db64a719b629393201311a37cbb97b966eab4c7c9` | https://stellar.expert/explorer/testnet/tx/96bf843af442d2e1e332cb2db64a719b629393201311a37cbb97b966eab4c7c9 |
 | `initialize` (poll created) | `e24477bbc3148265dd4acc59e80d880eaf76d6984384bba7ca39115ce59d3377` | https://stellar.expert/explorer/testnet/tx/e24477bbc3148265dd4acc59e80d880eaf76d6984384bba7ca39115ce59d3377 |
 | `vote` (contract call from seed) | `048e8e6cbd102e275280708e27822656e952e354991f919d6871313f3580ed48` | https://stellar.expert/explorer/testnet/tx/048e8e6cbd102e275280708e27822656e952e354991f919d6871313f3580ed48 |
+| `vote` (from the app via Freighter) | `37a59ed9e017c1216400f8d6a3b7aeba98ae38a720bee76236b7c38d5e7d6ba6` | https://stellar.expert/explorer/testnet/tx/37a59ed9e017c1216400f8d6a3b7aeba98ae38a720bee76236b7c38d5e7d6ba6 |
 
-The `vote` hash is a contract call from the CLI. When you vote from the app the
-transaction hash appears in the status panel and is verifiable on Stellar Expert
-the same way.
+The `vote` hashes are contract calls made from the CLI and from the app. When you
+vote from the app the transaction hash appears in the status panel and is
+verifiable on Stellar Expert the same way.
 
 ### Live poll (as deployed)
 
 > **Best Stellar track to build?** — Payments · DeFi · NFTs · Gaming
+
+Current on-chain totals (verifiable via `get_poll`):
+
+| Option | Votes |
+| --- | --- |
+| Payments | 0 |
+| **DeFi** | **2** |
+| NFTs | 0 |
+| Gaming | 0 |
 
 ---
 
