@@ -1,0 +1,13 @@
+node_modules/
+dist/
+dist-ssr/
+.env
+target/
+*.wasm
+.vercel
+.DS_Store
+*.log
+
+# build/test artifacts
+*.tsbuildinfo
+contract/test_snapshots/
