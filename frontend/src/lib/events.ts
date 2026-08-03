@@ -43,18 +43,41 @@ const FILTERS: rpc.Api.EventFilter[] = [
 export async function fetchPollEvents(
   cursor?: string,
 ): Promise<{ events: PollEvent[]; cursor: string }> {
-  const request: rpc.Api.GetEventsRequest = cursor
-    ? { filters: FILTERS, cursor, limit: 100 }
-    : { filters: FILTERS, startLedger: START_LEDGER, limit: 100 };
+  let currentCursor = cursor;
+  const allEvents: PollEvent[] = [];
+  let iterations = 0;
+  const maxIterations = 20;
 
-  const response = await server.getEvents(request);
-  const events: PollEvent[] = [];
-  for (const raw of response.events) {
-    if (!raw.inSuccessfulContractCall) continue;
-    const parsed = parseEvent(raw);
-    if (parsed) events.push(parsed);
+  while (iterations < maxIterations) {
+    iterations++;
+    const request: rpc.Api.GetEventsRequest = currentCursor
+      ? { filters: FILTERS, cursor: currentCursor, limit: 100 }
+      : { filters: FILTERS, startLedger: START_LEDGER, limit: 100 };
+
+    const response = await server.getEvents(request);
+
+    if (response.events && response.events.length > 0) {
+      for (const raw of response.events) {
+        if (!raw.inSuccessfulContractCall) continue;
+        const parsed = parseEvent(raw);
+        if (parsed) allEvents.push(parsed);
+      }
+    }
+
+    if (
+      !response.cursor ||
+      response.cursor === currentCursor ||
+      !response.events ||
+      response.events.length === 0
+    ) {
+      if (response.cursor) currentCursor = response.cursor;
+      break;
+    }
+
+    currentCursor = response.cursor;
   }
-  return { events, cursor: response.cursor };
+
+  return { events: allEvents, cursor: currentCursor ?? cursor ?? "" };
 }
 
 function parseEvent(raw: rpc.Api.EventResponse): PollEvent | null {

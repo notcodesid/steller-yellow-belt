@@ -65,14 +65,14 @@ export default function App() {
     try {
       const { events, cursor } = await fetchPollEvents(eventCursor.current ?? undefined);
       eventCursor.current = cursor;
-      let newEvents = false;
+      const incoming: PollEvent[] = [];
       for (const event of events) {
         if (seenEvents.current.has(event.id)) continue;
         seenEvents.current.add(event.id);
-        setFeed((prev) => [event, ...prev].slice(0, 60));
-        newEvents = true;
+        incoming.push(event);
       }
-      if (newEvents) {
+      if (incoming.length > 0) {
+        setFeed((prev) => [...incoming.reverse(), ...prev].slice(0, 60));
         refreshPoll().catch(() => {});
       }
     } catch {
