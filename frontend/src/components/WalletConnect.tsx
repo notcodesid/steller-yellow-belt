@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react";
-
-import { getSupportedWallets } from "../lib/wallets";
-
 interface Props {
   address: string | null;
   connecting: boolean;
@@ -14,22 +10,17 @@ export function shortAddress(address: string): string {
 }
 
 export function WalletConnect({ address, connecting, onConnect, onDisconnect }: Props) {
-  const [wallets, setWallets] = useState<{ name: string; available: boolean }[]>([]);
-
-  useEffect(() => {
-    getSupportedWallets()
-      .then((list) =>
-        setWallets(list.map((w) => ({ name: w.name, available: w.isAvailable }))),
-      )
-      .catch(() => setWallets([]));
-  }, []);
 
   if (address) {
     return (
       <div className="wallet-box">
-        <span className="addr mono">{shortAddress(address)}</span>
-        <button className="btn btn-sm" onClick={onDisconnect}>
-          Disconnect
+        <button
+          className="btn-connect connected"
+          onClick={onDisconnect}
+          title="Click to disconnect wallet"
+        >
+          <span className="mono">{shortAddress(address)}</span>
+          <span className="chevron">›</span>
         </button>
       </div>
     );
@@ -37,19 +28,14 @@ export function WalletConnect({ address, connecting, onConnect, onDisconnect }: 
 
   return (
     <div className="wallet-box">
-      <button className="btn btn-primary" onClick={onConnect} disabled={connecting}>
-        {connecting ? "Waiting for wallet…" : "Connect wallet"}
+      <button
+        className="btn-connect"
+        onClick={onConnect}
+        disabled={connecting}
+      >
+        <span>{connecting ? "connecting…" : "connect"}</span>
+        <span className="chevron">›</span>
       </button>
-      {wallets.length > 0 && (
-        <div className="wallets-row">
-          {wallets.slice(0, 8).map((w) => (
-            <span className="wallet-chip" key={w.name} title={w.available ? "Available" : "Not installed"}>
-              <span className={w.available ? "ok" : "no"} />
-              {w.name}
-            </span>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

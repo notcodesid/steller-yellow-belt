@@ -8,7 +8,6 @@ import { WalletConnect } from "./components/WalletConnect";
 import {
   ADMIN_ADDRESS,
   CONTRACT_ID,
-  NETWORK_NAME,
   explorerAccount,
   explorerContract,
 } from "./config";
@@ -33,12 +32,26 @@ export default function App() {
   const [selected, setSelected] = useState<number | null>(null);
   const [hasVotedFlag, setHasVotedFlag] = useState(false);
 
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    return (localStorage.getItem("theme") as "dark" | "light") || "dark";
+  });
+
+  const [activeTab, setActiveTab] = useState<"activity" | "txs">("activity");
   const [feed, setFeed] = useState<PollEvent[]>([]);
   const [txs, setTxs] = useState<TxRecord[]>([]);
   const [error, setError] = useState<AppError | null>(null);
 
   const eventCursor = useRef<string | null>(null);
   const seenEvents = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   const refreshPoll = useCallback(async () => {
     const data = await getPoll();
@@ -205,17 +218,17 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <div className="logo">◐</div>
-          <div>
-            <h1>Live Poll</h1>
-            <small>Real-time voting on Stellar · Soroban</small>
-          </div>
+          <span className="brand-name">live poll</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span className="network-badge">
-            <span className="dot" />
-            {NETWORK_NAME}
-          </span>
+        <div className="header-actions">
+          <button
+            className="btn-connect"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            <span>{theme === "dark" ? "light" : "dark"}</span>
+          </button>
           <WalletConnect
             address={address}
             connecting={connecting}
@@ -225,32 +238,56 @@ export default function App() {
         </div>
       </header>
 
+      <div className="hero-section">
+        <div className="hero-badge">✦</div>
+        <h1 className="hero-title">real-time on-chain voting</h1>
+        <p className="hero-subtitle">
+          built on stellar soroban — vote live, stream contract events.
+        </p>
+      </div>
+
       <ErrorBanner error={error} onDismiss={() => setError(null)} />
 
       <main className="grid">
-        <section className="stack">
-          {poll ? (
-            <PollCard
-              poll={poll}
-              address={address}
-              selected={selected}
-              hasVoted={hasVotedFlag}
-              busy={busy}
-              onSelect={setSelected}
-              onVote={handleVote}
-              onClose={handleClose}
-            />
-          ) : (
-            <div className="card">
-              <p className="empty">Loading poll from the contract…</p>
-            </div>
-          )}
-          <TxStatus txs={txs} />
-        </section>
+        {poll ? (
+          <PollCard
+            poll={poll}
+            address={address}
+            selected={selected}
+            hasVoted={hasVotedFlag}
+            busy={busy}
+            onSelect={setSelected}
+            onVote={handleVote}
+            onClose={handleClose}
+          />
+        ) : (
+          <div className="card">
+            <p className="empty">Loading poll from the contract…</p>
+          </div>
+        )}
 
-        <aside className="stack">
-          <ActivityFeed events={feed} poll={poll} />
-        </aside>
+        <div className="tab-section">
+          <div className="tab-nav">
+            <button
+              className={`tab-item ${activeTab === "activity" ? "active" : ""}`}
+              onClick={() => setActiveTab("activity")}
+            >
+              Activity feed ({feed.length})
+            </button>
+            <button
+              className={`tab-item ${activeTab === "txs" ? "active" : ""}`}
+              onClick={() => setActiveTab("txs")}
+            >
+              Transactions ({txs.length})
+            </button>
+          </div>
+
+          {activeTab === "activity" ? (
+            <ActivityFeed events={feed} poll={poll} />
+          ) : (
+            <TxStatus txs={txs} />
+          )}
+        </div>
       </main>
 
       <footer className="footer">

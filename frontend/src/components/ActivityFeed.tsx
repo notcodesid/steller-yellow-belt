@@ -23,7 +23,7 @@ export function ActivityFeed({ events, poll }: Props) {
               <span className="dot2" />
               <span>
                 {event.kind === "created" && (
-                  <>📣 Poll created on-chain</>
+                  <>Poll created on-chain</>
                 )}
                 {event.kind === "vote_cast" && (
                   <>
@@ -35,8 +35,8 @@ export function ActivityFeed({ events, poll }: Props) {
                     {" "}· total {event.totalVotes}
                   </>
                 )}
-                {event.kind === "closed" && <>🔒 Poll closed by admin</>}
-                {event.kind === "other" && <>⚙️ Unknown event</>}
+                {event.kind === "closed" && <>Poll closed by admin</>}
+                {event.kind === "other" && <>Unknown event</>}
               </span>
               <span className="time">
                 <a href={explorerTx(event.txHash)} target="_blank" rel="noreferrer">
