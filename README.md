@@ -4,6 +4,8 @@ A **real-time on-chain poll** built on Stellar (Soroban). Multi-wallet support,
 a deployed testnet contract, live contract-event streaming, and full
 transaction status tracking.
 
+![Live Poll Overview](screenshots/product.png)
+
 ---
 
 ## ✨ What it does
@@ -17,6 +19,17 @@ transaction status tracking.
   `closed` contract events via `getEvents` and syncs the poll state live.
 - **Transaction status tracking** — every write goes through
   `pending → success / failed` with a link to Stellar Expert.
+
+---
+
+## 🖼 Wallet options
+
+Multi-wallet selection via [StellarWalletsKit v2](https://stellarwalletskit.dev) —
+the `Connect wallet` button opens an auth modal listing every supported wallet
+(an install label is shown for ones not present), and the header shows
+availability chips for them.
+
+![Wallet options modal](screenshots/wallet-option.png)
 
 ---
 
@@ -53,4 +66,5 @@ to run the frontend or build/redeploy the contract locally.
 
 ## 🔗 Links
 
+- Live demo: https://steller-yellow-belt-omega.vercel.app/
 - Stellar Expert: https://stellar.expert/explorer/testnet
